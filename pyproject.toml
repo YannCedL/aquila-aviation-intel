@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aquila-aviation-intel"
+version = "1.0.0"
+description = "Aviation intelligence engine using OpenSky ADS-B network"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Genesis OSINT Team" }]
+dependencies = ["pydantic>=2.0.0", "genesis-core>=1.0.0", "fastapi>=0.100.0", "uvicorn>=0.22.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
