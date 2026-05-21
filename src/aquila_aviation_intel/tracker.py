@@ -20,3 +20,5 @@ def track_flights(lat_min: float, lat_max: float, lon_min: float, lon_max: float
         value=f"{len(flights)} flights", source="OpenSky_Network", observed_at=now,
         confidence=0.97, status=EpistemicStatus.FACT))
     return contract
+
+# added ICAO24 transponder filtering
