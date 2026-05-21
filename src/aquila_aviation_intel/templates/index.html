@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQUILA — Live Aviation ADS-B Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(18, 26, 43, 0.85);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #06b6d4;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            background-image: radial-gradient(circle at 50% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .logo-title { font-size: 1.3rem; font-weight: 700; }
+        .logo-subtitle { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .map-wrapper {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            min-height: 550px;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            min-height: 550px;
+        }
+
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(6, 182, 212, 0.15);
+            color: #22d3ee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">✈️</div>
+            <div>
+                <div class="logo-title">AQUILA</div>
+                <div class="logo-subtitle">Suivi ADS-B & Tracking Aviation Live</div>
+            </div>
+        </div>
+        <div class="badge" id="flightBadge">OPENSKY LIVE CONNECTED</div>
+    </header>
+
+    <div class="map-wrapper">
+        <div id="map"></div>
+    </div>
+
+    <script>
+        let map = L.map('map').setView([46.603354, 1.888334], 6);
+
+        // Carte Sombre CartoDB DarkMatter
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: 'OpenStreetMap, OpenSky Network'
+        }).addTo(map);
+
+        async function chargerVols() {
+            try {
+                const response = await fetch('/api/v1/flights');
+                const contract = await response.json();
+                const flights = contract.result.flights || [];
+
+                document.getElementById('flightBadge').textContent = `${flights.length} VOLS DÉTECTÉS EN DIRECT`;
+
+                flights.forEach(f => {
+                    const planeMarker = L.marker([f.lat, f.lon]).addTo(map);
+                    planeMarker.bindPopup(`
+                        <div style="font-family:Inter; color:#1e293b;">
+                            <strong style="font-size:1.1rem; color:#0284c7;">${f.callsign || 'Inconnu'}</strong><br/>
+                            <span>Pays: ${f.origin_country}</span><br/>
+                            <span>Altitude: ${f.altitude_m} m</span><br/>
+                            <span>Vitesse: ${f.velocity_ms} m/s</span><br/>
+                            <span style="font-size:0.75rem; color:#64748b;">ICAO24: ${f.icao24}</span>
+                        </div>
+                    `);
+                });
+
+            } catch (err) {
+                console.error("Erreur lors de la récupération des vols.");
+            }
+        }
+
+        window.onload = chargerVols;
+    </script>
+</body>
+</html>
