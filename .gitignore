@@ -1,6 +1,30 @@
+# Gemini & Antigravity
+.gemini/
+brain/
+
+# Environment & Secrets
+.env
+*.env
+*.pem
+*.key
+*.cert
+*.p12
+
+# Python
 __pycache__/
-*.pyc
-*.egg-info/
-.pytest_cache/
-.venv
+*.py[cod]
+*$py.class
+venv/
+.venv/
 env/
+
+# Databases & Caches
+*.db
+*.sqlite
+*.sqlite3
+.cache/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+desktop.ini

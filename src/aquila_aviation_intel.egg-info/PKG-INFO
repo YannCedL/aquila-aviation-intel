@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: aquila-aviation-intel
+Version: 1.0.0
+Summary: Aviation intelligence engine using OpenSky ADS-B network
+Author: Genesis OSINT Team
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: genesis-core>=1.0.0
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn>=0.22.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+
+# aquila-aviation-intel
+
+aviation intelligence engine tracking flights via OpenSky ADS-B.
+
+## install
+
+```bash
+pip install -e .
+```
