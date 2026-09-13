@@ -1,0 +1,155 @@
+{
+  "395580": {
+    "registration": "F-GVMA",
+    "type_code": "FA7X",
+    "model": "Dassault Falcon 7X",
+    "parent_company": "Groupe LVMH",
+    "registered_owner": "Société de Gestion Forestière et Immobilière",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "39c640": {
+    "registration": "F-GLVM",
+    "type_code": "FA8X",
+    "model": "Dassault Falcon 8X",
+    "parent_company": "Groupe LVMH",
+    "registered_owner": "Société de Gestion Forestière et Immobilière",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "394623": {
+    "registration": "F-GMLD",
+    "type_code": "FA7X",
+    "model": "Dassault Falcon 7X",
+    "parent_company": "Groupe Dassault",
+    "registered_owner": "Groupe Industriel Marcel Dassault",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "398c12": {
+    "registration": "F-HDAS",
+    "type_code": "DA42",
+    "model": "Diamond DA-42 Guardian",
+    "parent_company": "Groupe Dassault",
+    "registered_owner": "Dassault Falcon Service",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "3905cb": {
+    "registration": "F-GBOL",
+    "type_code": "GLEX",
+    "model": "Bombardier BD-700 Global 6000",
+    "parent_company": "Groupe Bolloré",
+    "registered_owner": "Compagnie du Cambodge / Bolloré SE",
+    "operator": "Bolloré Transport & Logistics",
+    "country": "France"
+  },
+  "39228b": {
+    "registration": "F-HBBL",
+    "type_code": "FA90",
+    "model": "Dassault Falcon 900EX",
+    "parent_company": "Groupe Bolloré",
+    "registered_owner": "Financière Moncey / Bolloré SE",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "391a13": {
+    "registration": "F-HART",
+    "type_code": "FA7X",
+    "model": "Dassault Falcon 7X",
+    "parent_company": "Kering / Artémis",
+    "registered_owner": "Financière Artémis",
+    "operator": "Dassault Falcon Service",
+    "country": "France"
+  },
+  "398560": {
+    "registration": "F-HBLA",
+    "type_code": "E190",
+    "model": "Embraer ERJ-190 Corporate Shuttle",
+    "parent_company": "TotalEnergies",
+    "registered_owner": "TotalEnergies SE",
+    "operator": "Air France Hop (Navette Total)",
+    "country": "France"
+  },
+  "394be0": {
+    "registration": "F-HBMI",
+    "type_code": "FA20",
+    "model": "Dassault Falcon 2000EX",
+    "parent_company": "Groupe Michelin",
+    "registered_owner": "Compagnie Générale des Établissements Michelin",
+    "operator": "Michelin Air Service",
+    "country": "France"
+  },
+  "3928e0": {
+    "registration": "F-GBYF",
+    "type_code": "FA7X",
+    "model": "Dassault Falcon 7X",
+    "parent_company": "Groupe Bouygues",
+    "registered_owner": "Bouygues SA",
+    "operator": "Bouygues Aviation",
+    "country": "France"
+  },
+  "4d025b": {
+    "registration": "LX-JFA",
+    "type_code": "GL7T",
+    "model": "Bombardier Global 7500",
+    "parent_company": "Inditex (Zara)",
+    "registered_owner": "Pontegadea Inversiones",
+    "operator": "EJME Aviation",
+    "country": "Luxembourg"
+  },
+  "500417": {
+    "registration": "T7-POL",
+    "type_code": "CL60",
+    "model": "Bombardier Challenger 604",
+    "parent_company": "Axis Aviation",
+    "registered_owner": "Axis Aviation S. Marino",
+    "operator": "Axis Aviation Corporate",
+    "country": "Saint-Marin"
+  },
+  "3d4973": {
+    "registration": "D-FABJ",
+    "type_code": "PC12",
+    "model": "Pilatus PC-12 NG",
+    "parent_company": "Pilatus Executive Services",
+    "registered_owner": "Air Alliance Express",
+    "operator": "Pilatus Business Travel",
+    "country": "Allemagne"
+  },
+  "39ac4d": {
+    "registration": "F-HLCN",
+    "type_code": "A109",
+    "model": "Leonardo AW109 VIP",
+    "parent_company": "Héli-Sécurité VIP",
+    "registered_owner": "Héli-Sécurité",
+    "operator": "Héli-Sécurité Executive",
+    "country": "France"
+  },
+  "4b3308": {
+    "registration": "HB-TIM",
+    "type_code": "EC45",
+    "model": "Airbus Helicopters H145",
+    "parent_company": "Swiss Air Transport",
+    "registered_owner": "Swiss Executive Flight",
+    "operator": "Swiss Corporate Rotor",
+    "country": "Suisse"
+  },
+  "300401": {
+    "registration": "I-NOST",
+    "type_code": "A139",
+    "model": "Leonardo AW139 VIP",
+    "parent_company": "VIP Executive Transport",
+    "registered_owner": "Alidaunia Corporate",
+    "operator": "Alidaunia VIP",
+    "country": "Italie"
+  },
+  "a4e982": {
+    "registration": "N417LX",
+    "type_code": "GLEX",
+    "model": "Bombardier Global 6000",
+    "parent_company": "Luxaviation Executive US",
+    "registered_owner": "Bank of Utah Trustee",
+    "operator": "Luxaviation Global",
+    "country": "États-Unis"
+  }
+}

@@ -1,0 +1,58 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AQUILA AVIATION INTEL — Radar Tactique & Focus 3D</title>
+
+<!-- Fonts: IBM Plex Mono (Tabular Avionics) & Inter / Space Grotesk -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS Engine -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          aquila: {
+            bg: '#080C14',
+            surface: '#0D1321',
+            card: '#0F172A',
+            border: '#1E293B',
+            cyan: '#06B6D4',
+            'cyan-light': '#38BDF8',
+            gold: '#D99B43',
+            'gold-light': '#F3BA63',
+            emerald: '#10B981',
+            rose: '#EF4444',
+            amber: '#F59E0B',
+            muted: '#64748B',
+            slate: '#94A3B8',
+          }
+        },
+        fontFamily: {
+          sans: ['Inter', 'Space Grotesk', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Custom Aquila Style -->
+<link rel="stylesheet" href="/static/css/aquila_style.css?v=3.5.0">
+
+<!-- Leaflet 2D Radar -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Vue.js 3 Production CDN -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+
+<!-- CesiumJS 3D Widgets CSS & Engine (jsDelivr high-speed CDN, deferred for 0 blocking) -->
+<link href="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<script>
+  window.CESIUM_BASE_URL = "https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Cesium.js" defer></script>

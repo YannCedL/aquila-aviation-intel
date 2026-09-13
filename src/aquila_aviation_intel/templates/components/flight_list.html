@@ -1,0 +1,86 @@
+{% raw %}
+<!-- Target Flights List Panel -->
+<div class="flex flex-col h-full bg-slate-950/80 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+  
+  <!-- Panel Header -->
+  <div class="p-3.5 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/50">
+    <div class="flex items-center space-x-2">
+      <span class="text-base">📡</span>
+      <h2 class="text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">CIBLES TACTIQUES</h2>
+    </div>
+    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-cyan-400 border border-slate-700">
+      {{ filteredFlights.length }} DÉTECTIONS
+    </span>
+  </div>
+
+  <!-- Target Cards Scrollable Container -->
+  <div class="flex-1 overflow-y-auto p-2.5 space-y-2">
+    <div 
+      v-for="f in filteredFlights.slice(0, 100)" 
+      :key="f.icao24"
+      @click="activerFocus(f)"
+      :class="[
+        f.is_corporate 
+          ? 'border-amber-500/30 hover:border-amber-400/60 bg-amber-950/10' 
+          : 'border-slate-800 hover:border-cyan-500/50 bg-slate-900/40',
+        focusedFlight && focusedFlight.icao24 === f.icao24 ? 'ring-2 ring-cyan-400 border-cyan-400' : ''
+      ]"
+      class="p-3 rounded-xl border transition-all cursor-pointer group hover:bg-slate-900/80 select-none"
+    >
+      <!-- Top Row: Callsign & Badges -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-mono font-bold text-white group-hover:text-cyan-300 transition">
+            {{ f.registration || f.callsign }}
+          </span>
+          <span v-if="f.registration && f.callsign && f.registration !== f.callsign" class="text-[11px] font-mono text-slate-400">
+            ({{ f.callsign }})
+          </span>
+        </div>
+        <span 
+          v-if="f.is_corporate" 
+          class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40"
+        >
+          ⭐ VIP
+        </span>
+        <span 
+          v-else-if="f.on_ground" 
+          class="px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-400 bg-slate-800/80 border border-slate-700"
+        >
+          SOL
+        </span>
+        <span 
+          v-else 
+          class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950/40 text-cyan-300 border border-cyan-800/50"
+        >
+          FL{{ Math.round((f.altitude_m || 0) * 3.28084 / 100) }}
+        </span>
+      </div>
+
+      <!-- Mid Row: Model & Type -->
+      <div class="text-[11px] text-slate-300 font-medium mt-1 truncate">
+        {{ f.model || 'Aéronef' }} 
+        <span v-if="f.type_code" class="text-slate-500 font-mono">[{{ f.type_code }}]</span>
+      </div>
+
+      <!-- Bottom Row: Operator & Velocity / Altitude -->
+      <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mt-2 pt-2 border-t border-slate-800/60">
+        <span class="text-cyan-400/90 font-medium truncate max-w-[150px]">
+          {{ f.operator || f.owner || f.origin_country || 'Privé / Non renseigné' }}
+        </span>
+        <div class="flex items-center space-x-2 shrink-0">
+          <span>{{ f.velocity_kmh }} km/h</span>
+          <span class="text-slate-600">•</span>
+          <span>{{ f.altitude_m }} m</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-if="filteredFlights.length === 0" class="p-8 text-center text-xs font-mono text-slate-500">
+      Aucun aéronef ne correspond aux critères de recherche actuels.
+    </div>
+  </div>
+
+</div>
+{% endraw %}

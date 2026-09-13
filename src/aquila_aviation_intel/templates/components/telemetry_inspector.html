@@ -1,0 +1,202 @@
+{% raw %}
+<!-- 6-Block Accordion Telemetry Inspector Panel -->
+<div class="flex flex-col h-full bg-slate-950/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+  
+  <!-- Panel Header with Target Title & View/Exit Buttons -->
+  <div class="p-3.5 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60">
+    <div class="flex items-center space-x-2">
+      <span class="text-base text-cyan-400">📊</span>
+      <h2 class="text-xs font-mono font-bold tracking-wider text-cyan-400 uppercase">TÉLÉMÉTRIE DÉTAILLÉE</h2>
+    </div>
+    <div class="flex items-center space-x-1.5">
+      <button 
+        v-if="viewMode === '2d'"
+        @click="basculerVue('3d')"
+        class="text-[11px] font-mono font-bold text-cyan-300 hover:text-cyan-200 bg-cyan-500/20 hover:bg-cyan-500/30 px-2.5 py-1 rounded-lg border border-cyan-500/40 transition flex items-center space-x-1"
+        title="Voir cet aéronef sur le globe 3D"
+      >
+        <span>🌐</span>
+        <span>VOIR EN 3D</span>
+      </button>
+      <button 
+        v-else
+        @click="basculerVue('2d')"
+        class="text-[11px] font-mono font-bold text-cyan-300 hover:text-cyan-200 bg-cyan-500/20 hover:bg-cyan-500/30 px-2.5 py-1 rounded-lg border border-cyan-500/40 transition flex items-center space-x-1"
+        title="Revenir sur la carte 2D"
+      >
+        <span>🗺️</span>
+        <span>VOIR EN 2D</span>
+      </button>
+
+      <button 
+        @click="quitterFocus"
+        class="text-[11px] font-mono text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-2 py-1 rounded-lg border border-rose-500/30 transition flex items-center space-x-1"
+      >
+        <span>✕</span>
+        <span>LISTE</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Priority Emergency Banner (Squawk 7700 / 7600 / 7500) -->
+  <div 
+    v-if="isSquawkEmergency"
+    class="p-2.5 bg-rose-950/80 border-b border-rose-500/80 flex items-center space-x-2 text-rose-200 text-xs font-mono font-bold animate-pulse"
+  >
+    <span>⚠️</span>
+    <span>ALERTE ATC PRIORITAIRE : SQUAWK {{ focusedFlight.squawk }} ({{ squawkAlertLabel }})</span>
+  </div>
+
+  <!-- Accordion Sections Container -->
+  <div class="flex-1 overflow-y-auto p-3 space-y-2.5">
+    
+    <!-- Accordion 1: Identification & Exploitant -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('ident')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">1.</span>
+          <span>IDENTIFICATION & EXPLOITANT</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.ident ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.ident" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Immatriculation</span><strong class="text-white text-sm">{{ focusedFlight.registration || 'N/A' }}</strong></div>
+        <div><span class="text-slate-400 text-[11px] block">Indicatif (Callsign)</span><strong class="text-cyan-300 text-sm">{{ focusedFlight.callsign || 'N/A' }}</strong></div>
+        <div><span class="text-slate-400 text-[11px] block">Transpondeur ICAO24</span><span class="text-slate-200 uppercase">{{ focusedFlight.icao24 }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Type ICAO Doc 8643</span><span class="text-amber-300 font-bold">{{ focusedFlight.type_code || 'N/A' }}</span></div>
+        <div class="col-span-2"><span class="text-slate-400 text-[11px] block">Modèle / Cellule</span><span class="text-white">{{ focusedFlight.model || 'Aéronef standard' }}</span></div>
+        <div class="col-span-2"><span class="text-slate-400 text-[11px] block">Opérateur / Propriétaire</span><span class="text-cyan-400 font-semibold">{{ focusedFlight.operator || focusedFlight.owner || 'Aviation Civile' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Pays d'Enregistrement</span><span class="text-slate-300">{{ focusedFlight.origin_country || 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Catégorie</span><span :class="focusedFlight.is_corporate ? 'text-amber-400 font-bold' : 'text-slate-300'">{{ focusedFlight.category || (focusedFlight.is_corporate ? 'Corporate Jet' : 'Commercial') }}</span></div>
+      </div>
+    </div>
+
+    <!-- Accordion 2: Cinématique & Vecteurs -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('kinematics')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">2.</span>
+          <span>CINÉMATIQUE & VECTEURS 3D</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.kinematics ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.kinematics" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Altitude Barométrique</span><strong class="text-white text-sm">{{ focusedFlight.on_ground ? 'AU SOL' : (focusedFlight.alt_baro || focusedFlight.altitude_m) + ' m' }}</strong></div>
+        <div><span class="text-slate-400 text-[11px] block">Altitude Géométrique</span><span class="text-cyan-300">{{ focusedFlight.alt_geom ? focusedFlight.alt_geom + ' m' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Vitesse Sol (GS)</span><strong class="text-white">{{ focusedFlight.velocity_kmh }} km/h</strong> <span class="text-[10px] text-slate-400">({{ focusedFlight.speed_kts || Math.round(focusedFlight.velocity_kmh / 1.852) }} kt)</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Cap Compas Réel</span><span class="text-cyan-300 font-bold">{{ focusedFlight.heading_deg || 0 }}°</span></div>
+        <div class="col-span-2"><span class="text-slate-400 text-[11px] block">Coordonnées GPS</span><span class="text-slate-300">{{ (focusedFlight.lat || 0).toFixed(4) }}°N, {{ (focusedFlight.lon || 0).toFixed(4) }}°E</span></div>
+        <div class="col-span-2 p-2 bg-slate-950/60 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+          📍 Vecteur Prédictif à +3 min : {{ formatPositionProjection(focusedFlight) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion 3: Dynamique de Vol & Aérodynamique -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('dynamics')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">3.</span>
+          <span>DYNAMIQUE DE VOL & VARIOMÈTRE</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.dynamics ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.dynamics" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Vitesse Indiquée (IAS)</span><span class="text-white">{{ focusedFlight.ias_kts ? focusedFlight.ias_kts + ' kt' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Vitesse Vraie (TAS)</span><span class="text-white">{{ focusedFlight.tas_kts ? focusedFlight.tas_kts + ' kt' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Nombre de Mach</span><strong class="text-cyan-300">{{ focusedFlight.mach ? 'M ' + focusedFlight.mach.toFixed(2) : 'N/A' }}</strong></div>
+        <div>
+          <span class="text-slate-400 text-[11px] block">Variomètre (fpm)</span>
+          <strong :class="getVarioClass(focusedFlight.baro_rate_fpm)">
+            {{ formatVario(focusedFlight.baro_rate_fpm) }}
+          </strong>
+        </div>
+        <div><span class="text-slate-400 text-[11px] block">Roulis Alaire</span><span class="text-slate-300">{{ focusedFlight.roll_deg !== undefined ? focusedFlight.roll_deg + '°' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Taux de Virage</span><span class="text-slate-300">{{ focusedFlight.track_rate !== undefined ? focusedFlight.track_rate + '°/s' : 'N/A' }}</span></div>
+      </div>
+    </div>
+
+    <!-- Accordion 4: Systèmes de Bord MCP & Pilote Automatique -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('cockpit')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">4.</span>
+          <span>PILOTE AUTOMATIQUE & COCKPIT MCP</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.cockpit ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.cockpit" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Altitude MCP Cible</span><span class="text-cyan-300 font-bold">{{ focusedFlight.nav_altitude_mcp ? focusedFlight.nav_altitude_mcp + ' ft' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Cap Sélectionné MCP</span><span class="text-white">{{ focusedFlight.nav_heading ? focusedFlight.nav_heading + '°' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Calage Baro (QNH)</span><span class="text-slate-200">{{ focusedFlight.nav_qnh ? focusedFlight.nav_qnh + ' hPa' : '1013.25 hPa' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Modes Automatiques</span><span class="text-emerald-400 font-semibold">{{ formatNavModes(focusedFlight.nav_modes) }}</span></div>
+      </div>
+    </div>
+
+    <!-- Accordion 5: Météorologie In-Situ Embarquée -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('weather')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">5.</span>
+          <span>MÉTÉO IN-SITU (SONDES CELLULE)</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.weather ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.weather" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Température Air (OAT)</span><span class="text-cyan-300">{{ focusedFlight.oat_c !== undefined ? focusedFlight.oat_c + ' °C' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Température Totale (TAT)</span><span class="text-white">{{ focusedFlight.tat_c !== undefined ? focusedFlight.tat_c + ' °C' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Vitesse du Vent</span><span class="text-white">{{ focusedFlight.wind_speed_kts !== undefined ? focusedFlight.wind_speed_kts + ' kt' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Direction du Vent</span><span class="text-slate-300">{{ focusedFlight.wind_dir_deg !== undefined ? focusedFlight.wind_dir_deg + '°' : 'N/A' }}</span></div>
+      </div>
+    </div>
+
+    <!-- Accordion 6: Renseignement Radio SIGINT & Squawk -->
+    <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/40">
+      <button 
+        @click="toggleSection('sigint')" 
+        class="w-full px-3 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-200 bg-slate-900/80 hover:bg-slate-800/80 transition"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">6.</span>
+          <span>SIGINT, TRANSPONDEUR & ATC</span>
+        </div>
+        <span class="text-slate-400 text-[10px]">{{ openSections.sigint ? '▲' : '▼' }}</span>
+      </button>
+      <div v-show="openSections.sigint" class="p-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs font-mono">
+        <div><span class="text-slate-400 text-[11px] block">Code Squawk ATC</span><strong :class="isSquawkEmergency ? 'text-rose-400' : 'text-amber-300'">{{ focusedFlight.squawk || 'N/A' }}</strong></div>
+        <div><span class="text-slate-400 text-[11px] block">Squawk Ident (SPI)</span><span :class="focusedFlight.spi ? 'text-emerald-400 font-bold' : 'text-slate-400'">{{ focusedFlight.spi ? 'ACTIF (IDENT)' : 'INACTIF' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Puissance Signal RSSI</span><span class="text-white">{{ focusedFlight.rssi_dbfs !== undefined ? focusedFlight.rssi_dbfs + ' dBFS' : 'N/A' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Mode Réception</span><span class="text-cyan-300">{{ focusedFlight.mlat ? 'Multilatération MLAT' : 'ADS-B Direct' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Messages Transmis</span><span class="text-slate-300">{{ focusedFlight.messages_count || '1+' }}</span></div>
+        <div><span class="text-slate-400 text-[11px] block">Fraîcheur Signal</span><span class="text-emerald-400">{{ focusedFlight.seen_sec !== undefined ? focusedFlight.seen_sec + 's' : '0s' }}</span></div>
+      </div>
+    </div>
+
+    <!-- Quick Exit Focus Button at Bottom -->
+    <button 
+      @click="quitterFocus"
+      class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 rounded-xl text-xs font-mono font-bold transition flex items-center justify-center space-x-2 shadow-lg"
+    >
+      <span>✕</span>
+      <span>RETOURNER À LA VUE GLOBALE (ÉCHAP)</span>
+    </button>
+
+  </div>
+
+</div>
+{% endraw %}

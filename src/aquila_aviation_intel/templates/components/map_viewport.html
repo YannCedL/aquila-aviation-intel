@@ -1,0 +1,88 @@
+{% raw %}
+<!-- Tactical Viewport Container (Leaflet 2D + Cesium 3D) -->
+<div class="relative flex-1 w-full h-full min-h-[500px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl">
+  
+  <!-- 2D LEAFLET TACTICAL MAP -->
+  <div 
+    id="map2d" 
+    class="absolute inset-0 w-full h-full transition-opacity duration-300"
+    :class="viewMode === '2d' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'"
+  ></div>
+
+  <!-- 3D CESIUMJS GLOBE VIEWPORT -->
+  <div 
+    id="map3d" 
+    class="absolute inset-0 w-full h-full transition-opacity duration-300"
+    :class="viewMode === '3d' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'"
+  >
+    <!-- Cesium Loading / Fallback Indicator if Cesium is initializing -->
+    <div v-if="cesiumStatus === 'loading'" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center space-y-3">
+      <div class="w-10 h-10 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-xs font-mono text-cyan-300">Initialisation du Globe 3D WGS-84...</p>
+    </div>
+    <div v-else-if="cesiumStatus === 'error'" class="absolute inset-0 bg-slate-950/90 z-30 flex flex-col items-center justify-center p-6 text-center space-y-3">
+      <span class="text-3xl">⚠️</span>
+      <p class="text-sm font-bold text-amber-400">Globe 3D Indisponible</p>
+      <p class="text-xs text-slate-400 max-w-md">La vue tactique 2D reste active avec l'intégralité de la télémétrie avionique en temps réel.</p>
+      <button @click="basculerVue('2d')" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-mono font-bold text-slate-950">
+        RETOURNER EN VUE 2D
+      </button>
+    </div>
+  </div>
+
+  <!-- Tactical Target Focus HUD Badge (Contained strictly inside Map Viewport) -->
+  <div 
+    v-if="focusedFlight" 
+    class="absolute top-3 left-3 z-20 max-w-lg p-2.5 bg-slate-950/90 backdrop-blur-md border border-cyan-500/50 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-auto animate-in fade-in duration-200"
+  >
+    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center shrink-0">
+      <span class="text-sm animate-pulse">🎯</span>
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center space-x-2">
+        <span class="text-xs font-mono font-bold text-white truncate">{{ focusedFlight.registration || focusedFlight.callsign }}</span>
+        <span v-if="focusedFlight.is_corporate" class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">VIP</span>
+        <span class="text-[10px] font-mono text-cyan-400">FL{{ Math.round((focusedFlight.altitude_m || 0) * 3.28084 / 100) }}</span>
+      </div>
+      <p class="text-[10px] font-mono text-slate-400 truncate">
+        {{ focusedFlight.model || 'Aéronef' }} • {{ focusedFlight.operator || focusedFlight.owner || 'Aviation Civile' }} • {{ focusedFlight.velocity_kmh }} km/h
+      </p>
+    </div>
+    <div class="flex items-center space-x-1 shrink-0">
+      <button 
+        v-if="viewMode === '2d'"
+        @click="basculerVue('3d')"
+        class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition"
+        title="Voir cet aéronef sur le globe 3D"
+      >
+        🌐 3D
+      </button>
+      <button 
+        v-else
+        @click="basculerVue('2d')"
+        class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition"
+        title="Revenir sur la carte 2D"
+      >
+        🗺️ 2D
+      </button>
+      <button 
+        @click="quitterFocus"
+        class="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-900 text-xs transition"
+        title="Désélectionner (Échap)"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+
+  <!-- Tactical Viewport Watermark & Coordinates HUD -->
+  <div class="absolute bottom-3 left-3 z-20 pointer-events-none flex items-center space-x-2 bg-slate-950/80 backdrop-blur border border-slate-800 rounded-lg px-2.5 py-1 text-[10px] font-mono text-slate-400">
+    <span class="text-cyan-400 font-bold">TERRA GEOINT</span>
+    <span>•</span>
+    <span>AQUILA RADAR</span>
+    <span>•</span>
+    <span>WGS-84</span>
+  </div>
+
+</div>
+{% endraw %}
